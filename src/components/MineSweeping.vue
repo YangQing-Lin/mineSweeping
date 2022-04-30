@@ -113,7 +113,8 @@ export default {
     over(newVal) {
       switch (newVal) {
         case 1:
-          this.openAllMineLattice();
+          // this.openAllMineLattice();
+          this.openAllRest();
           alert("BOOM，爱心轰炸");
           break;
         case 2:
@@ -148,8 +149,8 @@ export default {
     init() {
       Object.assign(this.$data, this.$options.data());
       // 父组件带过来的格子数和雷数
-      this.rows = this.gameInfo[0];
-      this.cols = this.gameInfo[1];
+      this.rows = this.gameInfo[0]; // x轴（列数）
+      this.cols = this.gameInfo[1]; // y轴（行数）
       this.latticeNum = this.rows * this.cols;
       // 获取雷点位置
       this.getMinePosition();
@@ -211,6 +212,7 @@ export default {
         item.isOpen = true;
       });
     },
+    // 仅打开所有是雷的格子
     openAllMineLattice() {
       this.lattice.forEach((item) => {
         if (item.isMine) {
@@ -237,31 +239,31 @@ export default {
       let latticeIndexArr = [];
       // 当前格子位于第几行
       const latticeRow = Math.ceil(index / this.rows);
-      // 当前格子位于第几列（求余为0说明是最右边一列）
+      // 当前格子位于第几列（求余为0说明是最右边一列）**
       const latticeCol = Math.ceil(index % this.rows) || this.rows;
-      // const latticeCol = Math.ceil(index % this.rows) === 0 ? this.rows : Math.ceil(index % this.rows);
-      // 第一行没有上一行，不需要计算减1的行值，最后一行没有下一行，不需要计算加1的行值
-      for (
-        let i = latticeRow === 1 ? 0 : -1;
-        i < (latticeRow === this.cols ? 1 : 2);
-        i++
-      ) {
-        // 第一列没有左列，不需要计算减1的列值，最后一列没有右列，不需要计算加1的列值
-        for (
-          let j = latticeCol === 1 ? 0 : -1;
-          j < (latticeCol === this.rows ? 1 : 2);
-          j++
+      // 上方向向量
+      const up = [1, 1, 0, -1, -1, -1, 0, 1];
+      // 右方向向量
+      const right = [0, 1, 1, 1, 0, -1, -1, -1];
+      // 遍历当前格子周围一圈，如果索引越界就跳过
+      for (let i = 0; i < up.length; i++) {
+        let testRow = latticeRow + up[i];
+        let testCol = latticeCol + right[i];
+        // 行范围：[1, this.cols]  列范围：[1, this.rows]
+        if (
+          testRow < 1 ||
+          testRow > this.cols ||
+          testCol < 1 ||
+          testCol > this.rows
         ) {
-          // 索引值 = (当前行值 + （上一行【-1】/当前行【0】/下一行【+1】） - 1【1是索引从0开始，所以需要减去】) * 每行格子数 + 当前列值 + （上一列【-1】/当前列【0】/下一列【+1】）
-          const latticeIndex =
-            (latticeRow + i - 1) * this.rows + (latticeCol + j);
-          // 初始值加了1，所以索引要减去1才对
-          latticeIndexArr.push(latticeIndex - 1);
+          continue;
         }
+        // 所有格子索引范围（一维数组）：[0, this.cols * this.rows - 1]
+        latticeIndexArr.push((testRow - 1) * this.rows + testCol - 1);
       }
       return latticeIndexArr;
     },
-    // 点了格子
+    // 格子点击事件
     handleClickLattice(lattice) {
       // 如果置了标记状态，说明是手机端点雷的操作
       if (this.isMarkStatus) {
@@ -279,38 +281,35 @@ export default {
       if (!lattice.isOpen && lattice.isMine) {
         lattice.isOpen = true;
         this.over = 1;
-      } else {
+      } else if (lattice.mineNum) {
         // 是数字
-        if (lattice.mineNum) {
-          if (!lattice.isOpen && !lattice.isMark) {
-            lattice.isOpen = true;
-          }
-        } else {
-          // 是空白
-          const latticeIndexArr = this.getLatticeIndex(lattice.index);
-          this.showWhiteAround(lattice, latticeIndexArr);
+        if (!lattice.isOpen && !lattice.isMark) {
+          lattice.isOpen = true;
         }
+      } else {
+        // 是空白（数字为0）
+        // 获取周围的格子然后展示周围的空白标记
+        const latticeIndexArr = this.getLatticeIndex(lattice.index);
+        this.showWhiteAround(lattice, latticeIndexArr);
       }
     },
     // 右键确认是雷点
     handleSureMinePoint(lattice) {
+      // 格子未被点开
       if (!lattice.isOpen) {
         lattice.isMark = true;
         lattice.isOpen = true;
+        // 在雷的数组中找到当前格子并删除他
+        // indexOf：返回第一次出现的位置，找不到就返回-1
+        // splice：从找到的位置开始删除[1]个元素，在这里标记错的话位置是-1，将会删除数组最后一个元素
         this.minePosition.splice(this.minePosition.indexOf(lattice.index), 1);
         this.judgeIsOver();
-        // lattice.isMark = !lattice.isMark;
-        // if (lattice.isMark) {
-        //     lattice.isOpen = true;
-        //     this.minePosition.splice(this.minePosition.indexOf(lattice.index), 1);
-        //     this.judgeIsOver();
-        // } else {
-        //     this.minePosition.push(lattice.index);
-        // }
       } else {
+        // 格子被点开了表示之前被标记过，那么再右键一次就是取消标记
         if (lattice.isMark) {
           lattice.isMark = false;
           lattice.isOpen = false;
+          // 把地雷放回数组中（不用检查是不是真的地雷，真地雷数组已经备份了）
           this.minePosition.push(lattice.index);
         }
       }
