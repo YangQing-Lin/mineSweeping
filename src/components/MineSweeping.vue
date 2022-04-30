@@ -6,7 +6,7 @@
         :class="['mark-btn', isMarkStatus ? 'marked' : '']"
         @click="changeIsMarkStatus"
       >
-        标记❤
+        标记🚩
       </div>
       <div class="mark-btn right">计时：{{ time }} s</div>
     </div>
@@ -37,7 +37,7 @@
             }}</span>
           </template>
           <template v-else>
-            <span v-if="lattice[(col - 1) * rows + row - 1].isMark">❤</span>
+            <span v-if="lattice[(col - 1) * rows + row - 1].isMark">🚩</span>
             <span v-else>{{
               lattice[(col - 1) * rows + row - 1].mineNum
             }}</span>
@@ -113,6 +113,7 @@ export default {
     over(newVal) {
       switch (newVal) {
         case 1:
+          this.openAllMineLattice();
           alert("BOOM，爱心轰炸");
           break;
         case 2:
@@ -123,7 +124,7 @@ export default {
             }, 500);
           } else {
             this.openAllRest();
-            alert("优秀，找出了全部的❤");
+            alert("优秀，找出了全部的🚩");
           }
           break;
         default:
@@ -171,7 +172,7 @@ export default {
     getMinePosition() {
       // 定义一个数组装不重复的格点
       let mineArr = [];
-      // 循环雷数生成不重复的雷点
+      // 循环雷数生成不重复的雷点（生成this.gameInfo[2]个雷）
       for (let n = 0; n < this.gameInfo[2]; n++) {
         const random = Math.floor(Math.random() * this.latticeNum);
         if (mineArr.indexOf(random) === -1) {
@@ -185,6 +186,7 @@ export default {
     },
     // 格子属性初始化
     initLattice() {
+      // 格子列表
       let latticeArr = [];
       for (let n = 0; n < this.latticeNum; n++) {
         let lattice = {
@@ -193,7 +195,7 @@ export default {
           mineNum: 0,
           isMark: false,
         };
-        // n标记是否是雷
+        // n标记是否是雷（雷：true 非雷：false）
         lattice.isMine = this.minePosition.indexOf(n) > -1;
         // 如果不是雷，计算出格子周围8个点的雷数
         if (!lattice.isMine) {
@@ -209,7 +211,14 @@ export default {
         item.isOpen = true;
       });
     },
-    // 获取格子周围的雷数，
+    openAllMineLattice() {
+      this.lattice.forEach((item) => {
+        if (item.isMine) {
+          item.isOpen = true;
+        }
+      });
+    },
+    // 获取格子周围的雷数
     getMineNumAroundLattice(lattice, index) {
       // 先获取格子周围的有效索引
       const latticeIndexArr = this.getLatticeIndex(index);
