@@ -121,7 +121,7 @@ export default {
           const wrongMark = this.judgeWrongMark();
           if (wrongMark) {
             setTimeout(() => {
-              alert(`你有${wrongMark}个爱心标记错啦`);
+              alert(`你有${wrongMark}个地雷标记错误`);
             }, 500);
           } else {
             this.openAllRest();
@@ -314,33 +314,6 @@ export default {
         }
       }
     },
-    // // 当前格子周围的雷点被正确找出时，双击填充周围格子
-    // handleFillAround(lattice) {
-    //     // 首先判断当前格子已被点开
-    //     if (lattice.isOpen) {
-    //         // 拿到周围有效格子索引
-    //         const latticeIndexArr = this.getLatticeIndex(lattice.index);
-    //         let mineAllMarked = true;
-    //         // 存非雷的格子
-    //         let tempLatticeIndexArr = [];
-    //         // 循环格子，确认雷已全部被找出
-    //         for (let i = 0; i < latticeIndexArr.length; i++) {
-    //             if (this.lattice[latticeIndexArr[i]].isMine) {
-    //                 if (!this.lattice[latticeIndexArr[i]].isMark) {
-    //                     mineAllMarked = false;
-    //                     break;
-    //                 }
-    //             } else {
-    //                 tempLatticeIndexArr.push(latticeIndexArr[i]);
-    //             }
-    //         }
-    //         if (mineAllMarked) {
-    //             tempLatticeIndexArr.forEach(item => {
-    //                 this.lattice[item - 1].isOpen = true;
-    //             });
-    //         }
-    //     }
-    // },
     // 判断游戏是否结束
     judgeIsOver() {
       this.over = this.minePosition.length === 0 ? 2 : 0;
@@ -361,13 +334,14 @@ export default {
       latticeIndexArr = [...new Set(latticeIndexArr)];
       for (let i = 0; i < latticeIndexArr.length; i++) {
         const item = latticeIndexArr[i];
-        // 计算一个少一个，减少循环
-        latticeIndexArr.splice(i, 1);
-        i--;
+        // 删除已经检测过的格子，降低后面递归里面的循环次数
+        latticeIndexArr.splice(i--, 1);
+        // 跳过已经点开的格子
         if (this.lattice[item].isOpen) {
           continue;
         }
         this.lattice[item].isOpen = true;
+        // 如果当前格子数字为0就递归展示空白标记
         if (!this.lattice[item].mineNum) {
           const arr = this.getLatticeIndex(this.lattice[item].index);
           this.showWhiteAround(this.lattice[item], latticeIndexArr.concat(arr));
