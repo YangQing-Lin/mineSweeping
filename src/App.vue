@@ -23,7 +23,7 @@ export default {
       // 是否展示游戏盘
       showGame: true,
       // 游戏盘格子数和雷数
-      gameInfo: [8, 8, 10],
+      gameInfo: [8, 8, 5],
     };
   },
   methods: {

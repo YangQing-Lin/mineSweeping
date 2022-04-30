@@ -115,7 +115,7 @@ export default {
         case 1:
           // this.openAllMineLattice();
           this.openAllRest();
-          alert("BOOM，爱心轰炸");
+          alert("BOOM！！！");
           break;
         case 2:
           const wrongMark = this.judgeWrongMark();
