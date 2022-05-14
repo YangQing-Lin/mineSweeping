@@ -1,5 +1,7 @@
 # minesweeping
 
+## [在线访问](http://47.99.103.79:8001/)
+
 ## Project setup
 ```
 npm install
