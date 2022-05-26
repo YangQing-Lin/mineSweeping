@@ -2,44 +2,30 @@
   <div class="main">
     <!-- 1功能区 -->
     <div class="tool-content-t">
-      <div
-        :class="['mark-btn', isMarkStatus ? 'marked' : '']"
-        @click="changeIsMarkStatus"
-      >
+      <div :class="['mark-btn', isMarkStatus ? 'marked' : '']" @click="changeIsMarkStatus">
         标记🚩
       </div>
       <div class="mark-btn right">计时：{{ time }} s</div>
     </div>
     <!-- 中心游戏区 -->
     <div class="game-content">
-      <div
-        v-for="col in cols"
-        :key="Math.random() + col"
-        class="game-content-row"
-      >
-        <span
-          v-for="row in rows"
-          :key="Math.random() + row"
-          class="game-block"
-          :class="[
-            lattice[(col - 1) * rows + row - 1].isOpen ? 'open' : '',
-            lattice[(col - 1) * rows + row - 1].isMark ? 'mark' : '',
-          ]"
-          @click.left="handleClickLattice(lattice[(col - 1) * rows + row - 1])"
-          @click.right.prevent="
-            handleSureMinePoint(lattice[(col - 1) * rows + row - 1])
-          "
-        >
+      <div v-for="col in cols" :key="Math.random() + col" class="game-content-row">
+        <span v-for="row in rows" :key="Math.random() + row" class="game-block" :class="[
+          lattice[(col - 1) * rows + row - 1].isOpen ? 'open' : '',
+          lattice[(col - 1) * rows + row - 1].isMark ? 'mark' : '',
+        ]" @click.left="handleClickLattice(lattice[(col - 1) * rows + row - 1])" @click.right.prevent="
+  handleSureMinePoint(lattice[(col - 1) * rows + row - 1])
+">
           <template v-if="over === 1">
             <span v-if="lattice[(col - 1) * rows + row - 1].isMine">💣</span>
             <span v-else>{{
-              lattice[(col - 1) * rows + row - 1].mineNum
+                lattice[(col - 1) * rows + row - 1].mineNum
             }}</span>
           </template>
           <template v-else>
             <span v-if="lattice[(col - 1) * rows + row - 1].isMark">🚩</span>
             <span v-else>{{
-              lattice[(col - 1) * rows + row - 1].mineNum
+                lattice[(col - 1) * rows + row - 1].mineNum
             }}</span>
           </template>
         </span>
@@ -164,7 +150,7 @@ export default {
       }, 1000);
     },
     // 获取时间
-    getTimeText(time) {},
+    getTimeText(time) { },
     // 改变标记状态
     changeIsMarkStatus() {
       this.isMarkStatus = !this.isMarkStatus;
@@ -183,6 +169,7 @@ export default {
         }
       }
       this.minePosition = mineArr;
+      // 生成一个内容相同但指针不同的数组
       this.minePositionBake = [].concat(mineArr);
     },
     // 格子属性初始化
@@ -364,23 +351,28 @@ export default {
 @media (max-width: 767px) {
   #app .main {
     height: 100%;
+
     .tool-content-t {
       width: 100%;
     }
+
     .tool-content {
       position: static;
       margin: 20px auto;
       width: 50%;
       text-align: center;
+
       .tool {
         position: static;
         top: 0;
         transform: none;
       }
     }
+
     .game-content-row {
       width: max-content;
     }
+
     .game-content {
       width: 100%;
       max-height: 80%;
@@ -388,6 +380,7 @@ export default {
     }
   }
 }
+
 .main {
   padding: 10px;
   position: relative;
@@ -395,10 +388,12 @@ export default {
   transform: translateY(-50%);
   border: 2px dashed #0b7777;
   border-radius: 5px;
+
   .game-content-row {
     margin: 0 auto;
     width: fit-content;
     font-size: 0;
+
     .game-block {
       display: inline-block;
       margin: 2px;
@@ -410,23 +405,29 @@ export default {
       color: #fff;
       text-align: center;
       cursor: pointer;
-      & > span {
+
+      &>span {
         visibility: hidden;
       }
+
       &.open {
         background-color: #ddd;
-        & > span {
+
+        &>span {
           visibility: visible;
         }
       }
+
       &.mark {
         color: red;
       }
     }
   }
+
   .tool-content-t {
     margin: 0 auto;
     width: 300px;
+
     .mark-btn {
       display: inline-block;
       margin: 10px 0;
@@ -441,21 +442,25 @@ export default {
       &.marked {
         background-color: #a2891b;
       }
+
       &.right {
         float: right;
       }
     }
   }
+
   .tool-content {
     position: absolute;
     top: 20px;
     right: 10px;
     height: 100%;
+
     .tool {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      & > div {
+
+      &>div {
         margin: 10px 0;
         padding: 8px 12px;
         background-color: #0b7777;
