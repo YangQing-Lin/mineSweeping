@@ -13,9 +13,10 @@
         <span v-for="row in rows" :key="Math.random() + row" class="game-block" :class="[
           lattice[(col - 1) * rows + row - 1].isOpen ? 'open' : '',
           lattice[(col - 1) * rows + row - 1].isMark ? 'mark' : '',
-        ]" @click.left="handleClickLattice(lattice[(col - 1) * rows + row - 1])" @click.right.prevent="
-  handleSureMinePoint(lattice[(col - 1) * rows + row - 1])
-">
+        ]" 
+        @click.left="handleClickLattice(lattice[(col - 1) * rows + row - 1])" 
+        @click.right.prevent="handleSureMinePoint(lattice[(col - 1) * rows + row - 1])"
+        >
           <template v-if="over === 1">
             <span v-if="lattice[(col - 1) * rows + row - 1].isMine">💣</span>
             <span v-else>{{
@@ -250,7 +251,7 @@ export default {
       }
       return latticeIndexArr;
     },
-    // 格子点击事件
+    // 格子左键点击事件
     handleClickLattice(lattice) {
       // 如果置了标记状态，说明是手机端点雷的操作
       if (this.isMarkStatus) {
@@ -264,7 +265,7 @@ export default {
       if (this.over) {
         return false;
       }
-      // 是雷，提前结束战斗
+      // 是雷，提前结束游戏
       if (!lattice.isOpen && lattice.isMine) {
         lattice.isOpen = true;
         this.over = 1;
