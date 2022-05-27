@@ -59,12 +59,12 @@ export default {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-  border: 2px dashed #0b7777;
+  border: 2px dashed #409EFF;
   border-radius: 5px;
   width: 50%;
   font-size: 18px;
   text-align: center;
-  color: #0b7777;
+  color: #409EFF;
   ul {
     li {
       margin: 10px 0;

@@ -387,7 +387,7 @@ export default {
   position: relative;
   top: 50%;
   transform: translateY(-50%);
-  border: 2px dashed #0b7777;
+  border: 2px dashed #409EFF;
   border-radius: 5px;
 
   .game-content-row {
@@ -433,7 +433,7 @@ export default {
       display: inline-block;
       margin: 10px 0;
       padding: 8px 12px;
-      background-color: #0b7777;
+      background-color: #409EFF;
       border-radius: 2px;
       width: 100px;
       text-align: center;
@@ -441,7 +441,7 @@ export default {
       cursor: pointer;
 
       &.marked {
-        background-color: #a2891b;
+        background-color: #F56C6C;
       }
 
       &.right {
@@ -464,7 +464,7 @@ export default {
       &>div {
         margin: 10px 0;
         padding: 8px 12px;
-        background-color: #0b7777;
+        background-color: #409EFF;
         border-radius: 2px;
         color: #fff;
         cursor: pointer;
